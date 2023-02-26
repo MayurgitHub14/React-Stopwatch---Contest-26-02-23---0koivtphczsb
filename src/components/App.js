@@ -5,7 +5,24 @@ const App = () => {
   const intervalRef = useRef(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [laps, setLaps] = useState([]);
-
+  const [running, setRunning] = useState(false);
+  const [lapvisi, setlapvisi] = useState(false);
+  useEffect(() => {
+    let interval;
+    if(running) {
+      interval = setInterval(() => {
+        setCurrentTime((prevTime) => prevTime + .010);
+      }, 10);
+    } else if (!running) {
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  }, [running]);
+  
+  function handleLap() {
+    setLaps([...laps,currentTime])
+    setlapvisi(true)
+  }
   return (
     <div id="main">
       <section>
@@ -17,14 +34,12 @@ const App = () => {
           <button className="reset-btn">RESET</button>
         </section>
       </section>
-      <section className='lap-section'>
+    {lapvisi&&<section className='lap-section'>
         <h2>Laps</h2>
         <section className='laps'>
-          <p>lap</p>
-          <p>lap</p>
-          <p>lap</p>
+    {laps.map((item)=> <p>{item.toFixed(3)}</p>)}        
         </section>
-      </section>
+      </section>}
     </div>
   )
 }
